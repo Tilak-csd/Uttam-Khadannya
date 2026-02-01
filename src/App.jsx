@@ -6,11 +6,13 @@ import ServiceFeatures from './Services'
 import ProductGrid from './components/Products'
 import TestimonialCarousel from './components/Testomonial'
 import Footer from './components/Footer'
+import CartDrawer from './components/CartDrawer'
 
 export default function App() {
   return (
     <div>
       <Navbar />
+      <CartDrawer />
       <Hero />
       <PromoGrid />
       <ProductGrid />

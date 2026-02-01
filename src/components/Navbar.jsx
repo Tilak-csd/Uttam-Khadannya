@@ -5,6 +5,7 @@ import useCartStore from '../store/useCartStore';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const cartCount = useCartStore((state) => state.cart.length);
+  const toggleDrawer = useCartStore((state) => state.toggleDrawer);
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -36,7 +37,9 @@ const Navbar = () => {
             <button className="text-gray-600 cursor-pointer hover:text-green-600 transition-colors">
               <User className="h-6 w-6" />
             </button>
-            <button className="relative text-gray-600 cursor-pointer hover:text-green-600 transition-colors">
+            <button
+            onClick={toggleDrawer}
+             className="relative text-gray-600 cursor-pointer hover:text-green-600 transition-colors">
               <ShoppingCart className="h-6 w-6" />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
@@ -49,7 +52,9 @@ const Navbar = () => {
           {/* Mobile Right Section (Cart + Menu) */}
           <div className="md:hidden flex items-center space-x-4">
             {/* NEW: Mobile Cart Button */}
-            <button className="relative text-gray-600 cursor-pointer">
+            <button
+            onClick={toggleDrawer}
+             className="relative text-gray-600 cursor-pointer">
               <ShoppingCart className="h-7 w-7" />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">

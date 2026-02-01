@@ -2,18 +2,17 @@ import { create } from 'zustand';
 
 const useCartStore = create((set) => ({
   cart: [],
+  isDrawerOpen: false, // New State
   
-  // Action to add an item
+  toggleDrawer: () => set((state) => ({ isDrawerOpen: !state.isDrawerOpen })),
+  
   addToCart: (product) => 
     set((state) => ({ 
-      cart: [...state.cart, product] 
+      cart: [...state.cart, product],
+      isDrawerOpen: true // Automatically open drawer when item is added
     })),
-
-  // Action to clear the cart
-  clearCart: () => set({ cart: [] }),
-
-  // Action to remove a specific item by ID
-  removeFromCart: (productId) => 
+    
+  removeFromCart: (productId) =>
     set((state) => ({
       cart: state.cart.filter((item) => item.id !== productId)
     })),

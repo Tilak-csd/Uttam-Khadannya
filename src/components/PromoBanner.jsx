@@ -2,7 +2,7 @@ const banners = [
   {
     title: "Orange Juice Natural",
     color: "bg-[#FFB800]", // Bright orange
-    img: "your-juice-bottle-url",
+    img: "sdhfkahsdfkas",
     textColor: "text-white"
   },
   {
