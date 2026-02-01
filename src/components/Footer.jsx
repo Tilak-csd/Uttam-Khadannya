@@ -3,7 +3,7 @@ import { Facebook, Twitter, Youtube, Instagram } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white py-16 px-6 font-sans">
+    <footer className="bg-black text-white py-8 pt-16 px-6 font-sans">
       <div className="max-w-7xl mx-auto"> {/* Added max-width for better large-screen centering */}
         {/* Main Footer Content - Adjusted to 5 columns on large screens */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-10 mb-16">
@@ -93,7 +93,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500 uppercase tracking-widest">
           <p>© 2026 Uttam Khadannya. All rights reserved.</p>
-          <p>Designed by <a href="#" className="text-white hover:text-green-500 transition-colors">Unified Solutions</a></p>
+          <p>Designed by <a href="https://unifiedsolutions.kodebymanish.xyz/" target='_blank' className="text-white hover:text-green-500 transition-colors">Unified Solutions</a></p>
         </div>
       </div>
     </footer>

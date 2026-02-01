@@ -15,7 +15,7 @@ const slides = [
     subtitle: "FRESH FROM THE FARM",
     title: "PREMIUM CASHEWS",
     highlight: "FLAT 20% OFF",
-    image: "https://images.unsplash.com/photo-1509912747193-47098e98625e?q=80&w=1600&auto=format&fit=crop",
+    image: "./hero section bg 2.jpg",
   }
 ];
 
@@ -34,7 +34,7 @@ const Hero = () => {
 
   return (
     <section 
-      className="relative w-full h-[500px] md:h-[650px] flex items-center overflow-hidden transition-all duration-1000 bg-cover bg-center"
+      className="relative w-full h-[500px] md:h-[calc(100vh - 40px)] flex items-center overflow-hidden transition-all duration-1000 bg-cover bg-center"
       style={{ backgroundImage: `url('${slides[current].image}')` }} // Dynamic BG Image
     >
       {/* Overlay to ensure text readability */}
