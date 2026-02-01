@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { Search, Heart, RefreshCw, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { prodcutItems } from '../data/products';
+// 1. Import your Zustand store
+import useCartStore from '../store/useCartStore';
 
 const ProductGrid = () => {
+    // 2. Extract the addToCart function from the store
+    const addToCart = useCartStore((state) => state.addToCart);
+
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8; // 2 rows of 4 items each
+    const itemsPerPage = 8;
 
-    // Logic to calculate displayed items
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = prodcutItems.slice(indexOfFirstItem, indexOfLastItem);
-    
-    // Calculate total pages
     const totalPages = Math.ceil(prodcutItems.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
@@ -32,12 +34,12 @@ const ProductGrid = () => {
                 </div>
             </div>
 
-            {/* Grid - Rendering currentItems instead of prodcutItems */}
+            {/* Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {currentItems.map((product) => (
                     <div key={product.id} className="group relative border border-gray-100 rounded-xl hover:shadow-xl pb-6 transition-shadow duration-300 bg-white">
                         {product.isSale && (
-                            <span className="absolute top-4 left-4 z-10 bg-red-500 text-white text-xs font-bold px-3 py-3 rounded-full shadow-md">
+                            <span className="absolute top-4 left-4 z-10 bg-red-500 text-white text-xs font-bold px-3 py-4 rounded-full shadow-md">
                                 Sale
                             </span>
                         )}
@@ -53,13 +55,28 @@ const ProductGrid = () => {
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><Search size={18} /></button>
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><Heart size={18} /></button>
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><RefreshCw size={18} /></button>
-                                <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><ShoppingBag size={18} /></button>
+                                
+                                {/* 3. Add to cart on ShoppingBag click */}
+                                <button 
+                                    onClick={() => addToCart(product)}
+                                    className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"
+                                >
+                                    <ShoppingBag size={18} />
+                                </button>
                             </div>
                         </div>
 
                         <div className="text-center">
                             <h3 className="font-bold text-gray-800 mb-1">{product.name}</h3>
-                            <p className="text-gray-400 text-sm mb-2 hover:text-gray-800 cursor-pointer">Shop</p>
+                            
+                            {/* 4. Add to cart on "Shop" text click */}
+                            <p 
+                                onClick={() => addToCart(product)}
+                                className="text-gray-400 text-sm mb-2 hover:text-[#8cc63f] cursor-pointer transition-colors"
+                            >
+                                Shop
+                            </p>
+                            
                             <div className="flex justify-center items-center gap-2">
                                 {product.originalPrice && (
                                     <span className="text-gray-300 line-through text-sm font-medium">{product.originalPrice}</span>
@@ -71,7 +88,7 @@ const ProductGrid = () => {
                 ))}
             </div>
 
-            {/* Pagination Controls - Only show if more than 1 page exists */}
+            {/* Pagination Controls */}
             {totalPages > 1 && (
                 <div className="flex justify-center items-center mt-12 space-x-2">
                     <button 

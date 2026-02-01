@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Search, Menu, X, User, Heart } from 'lucide-react';
+import useCartStore from '../store/useCartStore';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(3); // Example state
-
+  const cartCount = useCartStore((state) => state.cart.length)
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,18 +29,18 @@ const Navbar = () => {
 
           {/* Desktop Icons */}
           <div className="hidden md:flex items-center space-x-6">
-            <button className="text-gray-600 hover:text-blue-600 transition-colors">
+            <button className="text-gray-600 cursor-pointer hover:text-green-600  transition-colors">
               <Heart className="h-6 w-6" />
             </button>
-            <button className="text-gray-600 hover:text-blue-600 transition-colors">
+            <button className="text-gray-600 cursor-pointer hover:text-green-600  transition-colors">
               <User className="h-6 w-6" />
             </button>
-            <button className="relative text-gray-600 hover:text-blue-600 transition-colors">
+            <button className="relative text-gray-600 cursor-pointer hover:text-green-600 transition-colors">
               <ShoppingCart className="h-6 w-6" />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
                   {cartCount}
-                </span>
+                </span> 
               )}
             </button>
           </div>
