@@ -34,7 +34,7 @@ const Hero = () => {
 
   return (
     <section 
-      className="relative w-full h-[500px] md:h-[calc(100vh - 40px)] flex items-center overflow-hidden transition-all duration-1000 bg-cover bg-center"
+      className="relative w-full min-h-[500px] h-[calc(100vh - 80px)] flex items-center overflow-hidden transition-all duration-1000 bg-cover bg-center"
       style={{ backgroundImage: `url('${slides[current].image}')` }} // Dynamic BG Image
     >
       {/* Overlay to ensure text readability */}
