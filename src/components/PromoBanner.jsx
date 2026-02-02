@@ -1,20 +1,20 @@
 const banners = [
   {
-    title: "Orange Juice Natural",
+    title: "Aromatic Turmeric",
     color: "bg-[#FFB800]", // Bright orange
-    img: "sdhfkahsdfkas",
+    img: "./product banner 1.png",
     textColor: "text-white"
   },
   {
-    title: "Amla Candy & Murabba",
+    title: "Herbal Blends Sale",
     color: "bg-[#8BC34A]", // Vibrant green
-    img: "your-amla-jar-url",
+    img: "./product banner 2.png",
     textColor: "text-white"
   },
   {
-    title: "Jam Maj Spring Sale",
-    color: "bg-[#FF4081]", // Pink/Magenta
-    img: "your-jam-jar-url",
+    title: "Fiery Red Chilies Sale",
+    color: "bg-[#B91C1C]", // Pink/Magenta
+    img: "./product banner 3.png",
     textColor: "text-white"
   }
 ];
@@ -44,7 +44,7 @@ export const PromoGrid = () => {
           {/* Product Image */}
           <img 
             src={item.img} 
-            className="absolute -right-4 bottom-4 w-40 object-contain group-hover:scale-110 transition-transform duration-500"
+            className="absolute -right-4 bottom-4 w-60 object-contain group-hover:scale-110 transition-transform duration-500"
             alt={item.title}
           />
         </div>
