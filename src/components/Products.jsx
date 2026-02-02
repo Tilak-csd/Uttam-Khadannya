@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Heart, RefreshCw, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
-import { prodcutItems } from '../data/products';
+import { productItems } from '../data/products';
 // 1. Import your Zustand store
 import useCartStore from '../store/useCartStore';
 
@@ -14,8 +14,8 @@ const ProductGrid = () => {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = prodcutItems.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(prodcutItems.length / itemsPerPage);
+    const currentItems = productItems.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(productItems.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -79,9 +79,9 @@ const ProductGrid = () => {
                             
                             <div className="flex justify-center items-center gap-2">
                                 {product.originalPrice && (
-                                    <span className="text-gray-300 line-through text-sm font-medium">{product.originalPrice}</span>
+                                    <span className="text-gray-300 line-through text-sm font-medium">Rs.{product.originalPrice}</span>
                                 )}
-                                <span className="text-[#8cc63f] font-bold">{product.price}</span>
+                                <span className="text-[#8cc63f] font-bold">Rs. {product.price}</span>
                             </div>
                         </div>
                     </div>
