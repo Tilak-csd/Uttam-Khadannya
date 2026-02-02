@@ -13,7 +13,7 @@ const banners = [
   },
   {
     title: "Fiery Red Chilies Sale",
-    color: "bg-[#B91C1C]", // Pink/Magenta
+    color: "bg-[#B91C1C]", // Red
     img: "./product banner 3.png",
     textColor: "text-white"
   }

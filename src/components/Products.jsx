@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, Heart, RefreshCw, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { productItems } from '../data/products';
 // 1. Import your Zustand store
@@ -7,6 +7,9 @@ import useCartStore from '../store/useCartStore';
 const ProductGrid = () => {
     // 2. Extract the addToCart function from the store
     const addToCart = useCartStore((state) => state.addToCart);
+
+    // 1. Create a reference for the top of the grid section
+    const scrollTargetRef = useRef(null);
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
@@ -17,12 +20,22 @@ const ProductGrid = () => {
     const currentItems = productItems.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(productItems.length / itemsPerPage);
 
+    // 2. Scroll to the reference whenever currentPage changes
+    useEffect(() => {
+        if (scrollTargetRef.current) {
+            scrollTargetRef.current.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+    }, [currentPage]);
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
     return (
-        <section className="max-w-7xl mx-auto px-4 py-16">
+        <section ref={scrollTargetRef} className="max-w-7xl mx-auto px-4 py-16">
             {/* Section Heading */}
             <div className="text-center mb-12">
                 <p className="italic text-[#8cc63f] font-serif text-xl">See Our Latest</p>
@@ -55,9 +68,9 @@ const ProductGrid = () => {
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><Search size={18} /></button>
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><Heart size={18} /></button>
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><RefreshCw size={18} /></button>
-                                
+
                                 {/* 3. Add to cart on ShoppingBag click */}
-                                <button 
+                                <button
                                     onClick={() => addToCart(product)}
                                     className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"
                                 >
@@ -65,24 +78,32 @@ const ProductGrid = () => {
                                 </button>
                             </div>
                         </div>
-
-                        <div className="text-center">
+                        <div className="text-center flex flex-col justify-center items-center gap-1">
                             <h3 className="font-bold text-gray-800 mb-1">{product.name}</h3>
-                            
-                            {/* 4. Add to cart on "Shop" text click */}
-                            <p 
+
+                            {/* 4. Add to cart on "Shop" text click
+                            <p
                                 onClick={() => addToCart(product)}
                                 className="text-gray-400 text-sm mb-2 hover:text-[#8cc63f] cursor-pointer transition-colors"
                             >
                                 Shop
-                            </p>
-                            
+                            </p> */}
+
                             <div className="flex justify-center items-center gap-2">
                                 {product.originalPrice && (
                                     <span className="text-gray-300 line-through text-sm font-medium">Rs.{product.originalPrice}</span>
                                 )}
                                 <span className="text-[#8cc63f] font-bold">Rs. {product.price}</span>
                             </div>
+                            
+                            {/* Stylish Add to Cart Button */}
+                            <button
+                                onClick={() => addToCart(product)}
+                                className="w-[80%] cursor-pointer flex items-center justify-center gap-2 bg-[#8cc63f] text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-gray-600 transition-all duration-300 shadow-sm active:scale-95"
+                            >
+                                <ShoppingBag size={16} />
+                                Add to Cart
+                            </button>
                         </div>
                     </div>
                 ))}
@@ -91,7 +112,7 @@ const ProductGrid = () => {
             {/* Pagination Controls */}
             {totalPages > 1 && (
                 <div className="flex justify-center items-center mt-12 space-x-2">
-                    <button 
+                    <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                         className="p-2 rounded-full border border-gray-200 disabled:opacity-30 hover:bg-gray-50 transition-colors cursor-pointer"
@@ -103,17 +124,16 @@ const ProductGrid = () => {
                         <button
                             key={index + 1}
                             onClick={() => handlePageChange(index + 1)}
-                            className={`w-10 h-10 rounded-full font-bold transition-all ${
-                                currentPage === index + 1 
-                                ? 'bg-[#8cc63f] text-white shadow-md' 
-                                : 'text-gray-600 hover:bg-gray-100'
-                            }`}
+                            className={`w-10 h-10 rounded-full font-bold transition-all ${currentPage === index + 1
+                                    ? 'bg-[#8cc63f] text-white shadow-md'
+                                    : 'text-gray-600 hover:bg-gray-100'
+                                }`}
                         >
                             {index + 1}
                         </button>
                     ))}
 
-                    <button 
+                    <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className="p-2 rounded-full border border-gray-200 disabled:opacity-30 hover:bg-gray-50 transition-colors cursor-pointer"
