@@ -66,18 +66,17 @@ const CheckoutPage = () => {
             <div className="grid grid-cols-3 gap-3 mb-8">
               <button 
                 onClick={() => setPaymentMethod('esewa')}
-                className={`flex flex-col items-center justify-center p-4 border-2 rounded-xl transition-all ${paymentMethod === 'esewa' ? 'border-[#60bb46] bg-[#60bb46]/5' : 'border-slate-100'}`}
+                className={`flex flex-col items-center justify-center p-4 h-20 border-2 rounded-xl transition-all ${paymentMethod === 'esewa' ? 'border-[#60bb46] bg-[#60bb46]/5' : 'border-slate-100'}`}
               >
-                <img src="https://upload.wikimedia.org/wikipedia/en/e/e0/Esewa_logo.png" alt="eSewa" className="h-8 mb-1 object-contain" />
-                <span className="text-xs font-bold text-[#60bb46]">eSewa</span>
+                <img src="./esewa_logo.png" alt="eSewa" className="w-full h-auto mb-1 object-contain" />
+                {/* <span className="text-xs font-bold text-[#60bb46]">eSewa</span> */}
               </button>
 
               <button 
                 onClick={() => setPaymentMethod('khalti')}
-                className={`flex flex-col items-center justify-center p-4 border-2 rounded-xl transition-all ${paymentMethod === 'khalti' ? 'border-[#5c2d91] bg-[#5c2d91]/5' : 'border-slate-100'}`}
+                className={`flex flex-col items-center justify-center p-4 border-2 h-20 rounded-xl transition-all ${paymentMethod === 'khalti' ? 'border-[#5c2d91] bg-[#5c2d91]/5' : 'border-slate-100'}`}
               >
-                <img src="https://upload.wikimedia.org/wikipedia/en/e/e9/Khalti_logo.png" alt="Khalti" className="h-8 mb-1 object-contain" />
-                <span className="text-xs font-bold text-[#5c2d91]">Khalti</span>
+                <img src="./khalti_logo.png" alt="Khalti" className="h-auto w-full mb-1 object-contain" />
               </button>
 
               <button 
