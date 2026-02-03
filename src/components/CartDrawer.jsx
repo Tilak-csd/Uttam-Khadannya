@@ -94,7 +94,7 @@ const CartDrawer = () => {
                                 Rs. {totalAmount.toLocaleString()}
                             </span>
                         </div>
-                        <Link className="block text-center w-[100%] bg-[#8cc63f] text-white py-4 rounded-xl font-bold hover:bg-[#7ab335] transition-colors shadow-lg" to='/checkout' >
+                        <Link className="block text-center w-[100%] bg-[#8cc63f] text-white py-4 rounded-xl font-bold hover:bg-[#7ab335] transition-colors shadow-lg" to='/checkout' onClick={toggleDrawer} >
                             PROCEED TO CHECKOUT
                         </Link>
                     </div>

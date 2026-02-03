@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Search, Menu, X, User, Heart } from 'lucide-react';
 import useCartStore from '../store/useCartStore';
+import {Link} from 'react-router-dom'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,9 +14,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
+          <Link to='/' className=" cursor-pointer flex-shrink-0 flex items-center">
             <img src="./logo.png" alt="Logo" className='w-20' />
-          </div>
+          </Link>
 
           {/* Desktop Search Bar (Hidden on Mobile) */}
           <div className="hidden md:flex flex-1 justify-center px-8">

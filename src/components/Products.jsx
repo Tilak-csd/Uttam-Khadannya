@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Heart, RefreshCw, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { productItems } from '../data/products';
-// 1. Import your Zustand store
 import useCartStore from '../store/useCartStore';
 
 const ProductGrid = () => {
-    // 2. Extract the addToCart function from the store
     const addToCart = useCartStore((state) => state.addToCart);
-
-    // 1. Create a reference for the top of the grid section
-    const scrollTargetRef = useRef(null);
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,13 +15,28 @@ const ProductGrid = () => {
     const currentItems = productItems.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(productItems.length / itemsPerPage);
 
-    // 2. Scroll to the reference whenever currentPage changes
+    // 1. References
+    const isFirstRender = useRef(true);
+    const scrollTargetRef = useRef(null);
+
+    // 2. Scroll logic
     useEffect(() => {
+        // Skip the scroll on the very first load
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        // Only scroll when currentPage changes
         if (scrollTargetRef.current) {
-            scrollTargetRef.current.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
+            // Option A: Standard scroll
+            scrollTargetRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
             });
+            
+            // Note: If you have a fixed header, add 'scroll-mt-24' 
+            // to the section className below.
         }
     }, [currentPage]);
 
@@ -35,11 +45,15 @@ const ProductGrid = () => {
     };
 
     return (
-        <section ref={scrollTargetRef} className="max-w-7xl mx-auto px-4 py-16">
+        /* Added scroll-mt-20 to ensure it doesn't hide under a navbar */
+        <section 
+            ref={scrollTargetRef} 
+            className="max-w-7xl mx-auto px-4 py-16 scroll-mt-20"
+        >
             {/* Section Heading */}
             <div className="text-center mb-12">
                 <p className="italic text-[#8cc63f] font-serif text-xl">See Our Latest</p>
-                <h2 className="text-6xl font-bold font-serif text-gray-900 tracking-tight mt-1">NEW ARRIVALS</h2>
+                <h2 className="text-6xl font-bold font-serif text-gray-900 tracking-tight mt-1 uppercase">New Arrivals</h2>
                 <div className="flex justify-center mt-4 opacity-40">
                     <div className="h-px w-24 bg-gray-300"></div>
                     <span className="mx-2 text-[#8cc63f]">🌿</span>
@@ -68,8 +82,6 @@ const ProductGrid = () => {
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><Search size={18} /></button>
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><Heart size={18} /></button>
                                 <button className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"><RefreshCw size={18} /></button>
-
-                                {/* 3. Add to cart on ShoppingBag click */}
                                 <button
                                     onClick={() => addToCart(product)}
                                     className="p-2 bg-white rounded-full shadow-md hover:bg-[#8cc63f] hover:text-white transition-colors cursor-pointer"
@@ -78,25 +90,16 @@ const ProductGrid = () => {
                                 </button>
                             </div>
                         </div>
+
                         <div className="text-center flex flex-col justify-center items-center gap-1">
                             <h3 className="font-bold text-gray-800 mb-1">{product.name}</h3>
-
-                            {/* 4. Add to cart on "Shop" text click
-                            <p
-                                onClick={() => addToCart(product)}
-                                className="text-gray-400 text-sm mb-2 hover:text-[#8cc63f] cursor-pointer transition-colors"
-                            >
-                                Shop
-                            </p> */}
-
-                            <div className="flex justify-center items-center gap-2">
+                            <div className="flex justify-center items-center gap-2 mb-3">
                                 {product.originalPrice && (
                                     <span className="text-gray-300 line-through text-sm font-medium">Rs.{product.originalPrice}</span>
                                 )}
                                 <span className="text-[#8cc63f] font-bold">Rs. {product.price}</span>
                             </div>
-                            
-                            {/* Stylish Add to Cart Button */}
+
                             <button
                                 onClick={() => addToCart(product)}
                                 className="w-[80%] cursor-pointer flex items-center justify-center gap-2 bg-[#8cc63f] text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-gray-600 transition-all duration-300 shadow-sm active:scale-95"
@@ -124,10 +127,11 @@ const ProductGrid = () => {
                         <button
                             key={index + 1}
                             onClick={() => handlePageChange(index + 1)}
-                            className={`w-10 h-10 rounded-full font-bold transition-all ${currentPage === index + 1
+                            className={`w-10 h-10 rounded-full font-bold transition-all ${
+                                currentPage === index + 1
                                     ? 'bg-[#8cc63f] text-white shadow-md'
                                     : 'text-gray-600 hover:bg-gray-100'
-                                }`}
+                            }`}
                         >
                             {index + 1}
                         </button>
