@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Trash2, ShoppingBag, Plus, Minus } from 'lucide-react';
 import useCartStore from '../store/useCartStore';
+import { Link } from 'react-router-dom'
 
 const CartDrawer = () => {
     // Assuming your store has updateQuantity or addToCart/removeFromOne
@@ -93,9 +94,9 @@ const CartDrawer = () => {
                                 Rs. {totalAmount.toLocaleString()}
                             </span>
                         </div>
-                        <button className="w-full bg-[#8cc63f] text-white py-4 rounded-xl font-bold hover:bg-[#7ab335] transition-colors shadow-lg">
+                        <Link className="block text-center w-[100%] bg-[#8cc63f] text-white py-4 rounded-xl font-bold hover:bg-[#7ab335] transition-colors shadow-lg" to='/checkout' >
                             PROCEED TO CHECKOUT
-                        </button>
+                        </Link>
                     </div>
                 )}
             </div>
