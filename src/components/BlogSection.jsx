@@ -33,6 +33,10 @@ const BlogSection = () => {
     }
   ];
 
+  const developmentProcess = ()=>{
+    alert("This site is still Under Development Phase.")
+  }
+
   return (
     <section className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -45,7 +49,9 @@ const BlogSection = () => {
               Spices, Stories & <span className="text-green-600">Secrets</span>
             </h3>
           </div>
-          <button className="flex items-center gap-2 text-gray-900 font-bold hover:text-green-600 transition-colors group">
+          <button
+          onClick={developmentProcess}
+          className="flex items-center gap-2 text-gray-900 font-bold hover:text-green-600 transition-colors group">
             View All Posts 
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </button>
@@ -97,7 +103,9 @@ const BlogSection = () => {
                   {post.excerpt}
                 </p>
 
-                <button className="mt-auto text-sm font-bold text-green-600 hover:text-green-700 flex items-center gap-1 transition-colors">
+                <button
+                onClick={developmentProcess}
+                className="mt-auto text-sm font-bold text-green-600 hover:text-green-700 flex items-center gap-1 transition-colors">
                   Read Article <ArrowRight size={16} />
                 </button>
               </div>
