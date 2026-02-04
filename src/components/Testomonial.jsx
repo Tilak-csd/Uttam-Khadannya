@@ -61,7 +61,19 @@ const TestimonialCarousel = () => {
 
   return (
     <div className="relative w-full max-w-7xl mx-auto px-8 md:px-16 py-12 md:py-24 bg-white overflow-hidden">
+      <div className="text-center mb-16">
+          <h2 className="text-sm font-bold text-green-600 uppercase tracking-widest mb-3">
+            Testimonials
+          </h2>
+          <h3 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+            Trusted by <span className="text-green-600">Home Chefs</span> Everywhere
+          </h3>
+          <p className="mt-4 text-gray-500 max-w-xl mx-auto">
+            Discover why thousands of people trust our spices to bring health and flavor to their daily meals.
+          </p>
+        </div>
       <div className="relative flex flex-col md:flex-row justify-between gap-8 min-h-[400px]">
+        
         {/* popLayout prevents the layout jumping during entrance/exit */}
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
           {testimonials.slice(currentIndex, currentIndex + itemsPerPage).map((item, index) => (
@@ -77,7 +89,7 @@ const TestimonialCarousel = () => {
                 opacity: { duration: 0.3, ease: "easeInOut" },
                 scale: { duration: 0.4 },
                 // Stagger the items slightly so they don't move as one rigid block
-                delay: index * 0.05 
+                delay: index * 0.05
               }}
               className="flex-1 flex flex-col items-center text-center p-6 rounded-2xl bg-gray-50/50 border border-transparent hover:border-green-100 transition-colors"
             >
@@ -86,10 +98,10 @@ const TestimonialCarousel = () => {
               </div>
 
               <h3 className="text-xl font-bold text-gray-800 mb-4">{item.title}</h3>
-              <p className="text-gray-600 italic leading-relaxed mb-8 flex-grow">
+              <p className="text-gray-600 italic leading-relaxed mb-16 ">
                 "{item.content}"
               </p>
-              <div className="mt-auto">
+              <div className="">
                 <div className="w-8 h-1 bg-green-500 mx-auto mb-4 rounded-full" />
                 <span className="text-gray-900 font-bold uppercase tracking-wider text-sm">
                   {item.author}
@@ -105,11 +117,10 @@ const TestimonialCarousel = () => {
         <button
           onClick={prevSlide}
           disabled={currentIndex === 0}
-          className={`pointer-events-auto p-3 rounded-full bg-white shadow-lg border border-gray-100 transition-all ${
-            currentIndex === 0 
-            ? "opacity-0 scale-75 cursor-not-allowed" 
-            : "opacity-100 hover:bg-green-500 hover:text-white text-gray-400"
-          }`}
+          className={`pointer-events-auto p-3 rounded-full bg-white shadow-lg border border-gray-100 transition-all ${currentIndex === 0
+              ? "opacity-0 scale-75 cursor-not-allowed"
+              : "opacity-100 hover:bg-green-500 hover:text-white text-gray-400"
+            }`}
         >
           <ChevronLeft size={28} />
         </button>
@@ -117,21 +128,20 @@ const TestimonialCarousel = () => {
         <button
           onClick={nextSlide}
           disabled={currentIndex + itemsPerPage >= testimonials.length}
-          className={`pointer-events-auto p-3 rounded-full bg-white shadow-lg border border-gray-100 transition-all ${
-            currentIndex + itemsPerPage >= testimonials.length 
-            ? "opacity-0 scale-75 cursor-not-allowed" 
-            : "opacity-100 hover:bg-green-500 hover:text-white text-gray-400"
-          }`}
+          className={`pointer-events-auto p-3 rounded-full bg-white shadow-lg border border-gray-100 transition-all ${currentIndex + itemsPerPage >= testimonials.length
+              ? "opacity-0 scale-75 cursor-not-allowed"
+              : "opacity-100 hover:bg-green-500 hover:text-white text-gray-400"
+            }`}
         >
           <ChevronRight size={28} />
         </button>
       </div>
-      
+
       {/* Visual Progress Indicator */}
       <div className="mt-12 flex justify-center gap-2">
         {Array.from({ length: testimonials.length - (itemsPerPage - 1) }).map((_, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className={`h-1.5 transition-all duration-300 rounded-full ${i === currentIndex ? "w-8 bg-green-500" : "w-2 bg-gray-200"}`}
           />
         ))}
