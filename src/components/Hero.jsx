@@ -67,9 +67,9 @@ const Hero = () => {
             <h2 className="text-2xl md:text-4xl font-black text-gray-100 mt-2 mb-8 drop-shadow-md">
               {slides[current].highlight}
             </h2>
-            <button className="bg-[#8cc63f] text-white px-10 py-4 rounded-full cursor-pointer font-bold shadow-xl hover:bg-white hover:text-black transition-all duration-300 transform hover:scale-105">
+            <a href='#Product' className="bg-[#8cc63f] text-white px-10 py-4 rounded-full cursor-pointer font-bold shadow-xl hover:bg-white hover:text-black transition-all duration-300 transform hover:scale-105">
               SHOP NOW
-            </button>
+            </a>
           </motion.div>
         </AnimatePresence>
       </div>

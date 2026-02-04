@@ -49,6 +49,7 @@ const ProductGrid = () => {
         <section 
             ref={scrollTargetRef} 
             className="max-w-7xl mx-auto px-4 py-16 scroll-mt-20"
+            id='Product'
         >
             {/* Section Heading */}
             <div className="text-center mb-12">
