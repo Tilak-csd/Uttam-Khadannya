@@ -29,6 +29,10 @@ const CheckoutPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const alertHandling = () =>{
+    alert("This Site is stil under development phase")
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -139,7 +143,9 @@ const CheckoutPage = () => {
               <button className="flex-1 py-4 border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-all">
                 Cancel
               </button>
-              <button className="flex-[2] py-4 bg-[#8cc63f] text-white rounded-xl font-bold hover:bg-[#7ab335] shadow-lg shadow-[#8cc63f]/20 transition-all active:scale-[0.98]">
+              <button 
+              onClick={alertHandling}
+              className="flex-[2] cursor-pointer py-4 bg-[#8cc63f] text-white rounded-xl font-bold hover:bg-[#7ab335] shadow-lg shadow-[#8cc63f]/20 transition-all active:scale-[0.98]">
                 Confirm Order: Rs. {totalAmount.toLocaleString()}
               </button>
             </div>
