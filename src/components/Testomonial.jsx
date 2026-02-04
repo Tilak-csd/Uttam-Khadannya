@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Quote } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -11,9 +11,18 @@ const TestimonialCarousel = () => {
     { id: 5, title: "Sustainable Living", content: "Reduce your carbon footprint by supporting local farmers and minimizing plastic.", author: "Jane Smith" },
   ];
 
+  const [itemsPerPage, setItemsPerPage] = useState(3);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0); // -1 for left, 1 for right
-  const itemsPerPage = 3;
+  const [direction, setDirection] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setItemsPerPage(window.innerWidth < 768 ? 1 : 3);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const nextSlide = () => {
     if (currentIndex + itemsPerPage < testimonials.length) {
@@ -29,27 +38,33 @@ const TestimonialCarousel = () => {
     }
   };
 
-  // Animation variants
+  // Enhanced Animation Variants
   const variants = {
     enter: (direction) => ({
-      x: direction > 0 ? 100 : -100,
+      x: direction > 0 ? 80 : -80,
       opacity: 0,
+      scale: 0.95, // Subtle scale-in
     }),
     center: {
+      zIndex: 1,
       x: 0,
       opacity: 1,
+      scale: 1,
     },
     exit: (direction) => ({
-      x: direction < 0 ? 100 : -100,
+      zIndex: 0,
+      x: direction < 0 ? 80 : -80,
       opacity: 0,
+      scale: 0.95, // Subtle scale-out
     }),
   };
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto px-12 py-20 bg-white overflow-hidden">
-      <div className="flex flex-row justify-between gap-8 h-[400px]">
+    <div className="relative w-full max-w-7xl mx-auto px-8 md:px-16 py-12 md:py-24 bg-white overflow-hidden">
+      <div className="relative flex flex-col md:flex-row justify-between gap-8 min-h-[400px]">
+        {/* popLayout prevents the layout jumping during entrance/exit */}
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
-          {testimonials.slice(currentIndex, currentIndex + itemsPerPage).map((item) => (
+          {testimonials.slice(currentIndex, currentIndex + itemsPerPage).map((item, index) => (
             <motion.div
               key={item.id}
               custom={direction}
@@ -58,45 +73,69 @@ const TestimonialCarousel = () => {
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.2 },
+                x: { type: "spring", stiffness: 260, damping: 28 }, // Silky spring
+                opacity: { duration: 0.3, ease: "easeInOut" },
+                scale: { duration: 0.4 },
+                // Stagger the items slightly so they don't move as one rigid block
+                delay: index * 0.05 
               }}
-              className="flex-1 flex flex-col items-center text-center px-4"
+              className="flex-1 flex flex-col items-center text-center p-6 rounded-2xl bg-gray-50/50 border border-transparent hover:border-green-100 transition-colors"
             >
-              <div className="mb-6">
-                <Quote size={48} className="text-gray-200 rotate-180 fill-gray-100" />
+              <div className="mb-8 transform transition-transform group-hover:scale-110">
+                <Quote size={40} className="text-green-500/20 fill-green-500/10 rotate-180" />
               </div>
 
-              <h3 className="text-xl font-bold text-gray-800 mb-6">{item.title}</h3>
-              <p className="text-gray-500 italic leading-relaxed mb-8 min-h-[100px]">
-                {item.content}
+              <h3 className="text-xl font-bold text-gray-800 mb-4">{item.title}</h3>
+              <p className="text-gray-600 italic leading-relaxed mb-8 flex-grow">
+                "{item.content}"
               </p>
-              <span className="text-green-500 font-bold text-lg">{item.author}</span>
+              <div className="mt-auto">
+                <div className="w-8 h-1 bg-green-500 mx-auto mb-4 rounded-full" />
+                <span className="text-gray-900 font-bold uppercase tracking-wider text-sm">
+                  {item.author}
+                </span>
+              </div>
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
 
       {/* Navigation Controls */}
-      <button
-        onClick={prevSlide}
-        disabled={currentIndex === 0}
-        className={`absolute left-0 top-1/2 -translate-y-1/2 p-2 transition-colors ${
-          currentIndex === 0 ? "text-gray-200 cursor-not-allowed" : "text-gray-400 hover:text-black"
-        }`}
-      >
-        <ChevronLeft size={48} strokeWidth={1} />
-      </button>
+      <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-2 pointer-events-none">
+        <button
+          onClick={prevSlide}
+          disabled={currentIndex === 0}
+          className={`pointer-events-auto p-3 rounded-full bg-white shadow-lg border border-gray-100 transition-all ${
+            currentIndex === 0 
+            ? "opacity-0 scale-75 cursor-not-allowed" 
+            : "opacity-100 hover:bg-green-500 hover:text-white text-gray-400"
+          }`}
+        >
+          <ChevronLeft size={28} />
+        </button>
 
-      <button
-        onClick={nextSlide}
-        disabled={currentIndex + itemsPerPage >= testimonials.length}
-        className={`absolute right-0 top-1/2 -translate-y-1/2 p-2 transition-colors ${
-          currentIndex + itemsPerPage >= testimonials.length ? "text-gray-200 cursor-not-allowed" : "text-gray-400 hover:text-black"
-        }`}
-      >
-        <ChevronRight size={48} strokeWidth={1} />
-      </button>
+        <button
+          onClick={nextSlide}
+          disabled={currentIndex + itemsPerPage >= testimonials.length}
+          className={`pointer-events-auto p-3 rounded-full bg-white shadow-lg border border-gray-100 transition-all ${
+            currentIndex + itemsPerPage >= testimonials.length 
+            ? "opacity-0 scale-75 cursor-not-allowed" 
+            : "opacity-100 hover:bg-green-500 hover:text-white text-gray-400"
+          }`}
+        >
+          <ChevronRight size={28} />
+        </button>
+      </div>
+      
+      {/* Visual Progress Indicator */}
+      <div className="mt-12 flex justify-center gap-2">
+        {Array.from({ length: testimonials.length - (itemsPerPage - 1) }).map((_, i) => (
+          <div 
+            key={i} 
+            className={`h-1.5 transition-all duration-300 rounded-full ${i === currentIndex ? "w-8 bg-green-500" : "w-2 bg-gray-200"}`}
+          />
+        ))}
+      </div>
     </div>
   );
 };
