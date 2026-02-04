@@ -6,7 +6,7 @@ const slides = [
   {
     id: 1,
     subtitle: "DISCOVER 100% ORGANIC",
-    title: "DRY FRUITS",
+    title: "SPECIAL SPICES",
     highlight: "UP TO 75% OFF",
     image: "./hero section bg 1.svg", 
   },
