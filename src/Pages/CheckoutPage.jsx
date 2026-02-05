@@ -81,9 +81,8 @@ const CheckoutPage = () => {
         <input type="hidden" name="transaction_uuid" value={esewaConfig.transaction_uuid} />
         <input type="hidden" name="product_code" value={esewaConfig.product_code} />
         <input type="hidden" name="product_service_charge" value="0" />
-        <input type="hidden" name="product_delivery_charge" value="0" />
-        <input type="hidden" name="success_url" value="http://localhost:5173/paymentsuccess" />
-        <input type="hidden" name="failure_url" value="http://localhost:5173/paymentfailure" />
+        <input type="hidden" name="product_delivery_chahttps://uttamkhadannya.vercel.app/paymentsuccess" />
+        <input type="hidden" name="failure_url" value="https://uttamkhadannya.vercel.app/paymentfailure" />
         <input type="hidden" name="signed_field_names" value="total_amount,transaction_uuid,product_code" />
         <input type="hidden" name="signature" value={esewaConfig.signature} />
       </form>
