@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import {
-  Truck, ShoppingBag, ChevronLeft, Trash2, Ticket, Coins, User, Mail, MapPin, Phone
-} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react'; // Added useEffect, useRef
+import { Truck, ShoppingBag, ChevronLeft, Trash2, Ticket, Coins, User, Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useCartStore from '../store/useCartStore';
+import { v4 as uuidv4 } from "uuid"; // Import UUID
+import CryptoJS from "crypto-js";   // Import CryptoJS
 
 const CheckoutPage = () => {
   const [deliveryMethod, setDeliveryMethod] = useState('delivery');
   const [paymentMethod, setPaymentMethod] = useState('esewa');
+  const eSewaFormRef = useRef(null); // Reference to hidden form
 
-  // New State for Customer Details
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -20,24 +20,75 @@ const CheckoutPage = () => {
 
   const { cart, removeFromCart, getTotalAmount } = useCartStore();
 
+  // Price Calculations
   const subtotal = getTotalAmount();
   const deliveryCharge = deliveryMethod === 'delivery' ? 150 : 0;
   const tax = subtotal * 0.13;
   const totalAmount = subtotal + deliveryCharge + tax;
 
+  // --- eSewa Specific Logic Start ---
+  const [esewaConfig, setEsewaConfig] = useState({
+    transaction_uuid: uuidv4(),
+    product_code: "EPAYTEST",
+    secret: "8gBm/:&EnhH.1/q", // Keep secret here for testing, move to env for prod
+    signature: ""
+  });
+
+  // Function to generate HMAC Signature
+  const generateSignature = (total) => {
+    const hashString = `total_amount=${total},transaction_uuid=${esewaConfig.transaction_uuid},product_code=${esewaConfig.product_code}`;
+    const hash = CryptoJS.HmacSHA256(hashString, esewaConfig.secret);
+    return CryptoJS.enc.Base64.stringify(hash);
+  };
+
+  // Update signature whenever totalAmount changes
+  useEffect(() => {
+    const newSignature = generateSignature(totalAmount.toFixed(2));
+    setEsewaConfig(prev => ({ ...prev, signature: newSignature }));
+  }, [totalAmount]);
+
+  const handleConfirmOrder = (e) => {
+    if (!formData.fullName || !formData.phone) {
+      alert("Please fill in your shipping details first.");
+      return;
+    }
+
+    if (paymentMethod === 'esewa') {
+      // Submit the hidden eSewa form
+      eSewaFormRef.current.submit();
+    } else {
+      alert("This payment method is still under development phase");
+    }
+  };
+  // --- eSewa Specific Logic End ---
+
   const handleInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const alertHandling = () =>{
-    alert("This Site is stil under development phase")
-  }
-
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Hidden eSewa Form */}
+      <form
+        action="https://rc-epay.esewa.com.np/api/epay/main/v2/form"
+        method="POST"
+        ref={eSewaFormRef}
+        className="hidden"
+      >
+        <input type="hidden" name="amount" value={totalAmount.toFixed(2)} />
+        <input type="hidden" name="tax_amount" value="0" />
+        <input type="hidden" name="total_amount" value={totalAmount.toFixed(2)} />
+        <input type="hidden" name="transaction_uuid" value={esewaConfig.transaction_uuid} />
+        <input type="hidden" name="product_code" value={esewaConfig.product_code} />
+        <input type="hidden" name="product_service_charge" value="0" />
+        <input type="hidden" name="product_delivery_charge" value="0" />
+        <input type="hidden" name="success_url" value="http://localhost:5173/paymentsuccess" />
+        <input type="hidden" name="failure_url" value="http://localhost:5173/paymentfailure" />
+        <input type="hidden" name="signed_field_names" value="total_amount,transaction_uuid,product_code" />
+        <input type="hidden" name="signature" value={esewaConfig.signature} />
+      </form>
 
-        {/* Left Column: Delivery, Information & Payment */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8">
             <Link to="/" className="flex items-center text-slate-500 hover:text-slate-800 mb-6 transition-colors">
@@ -56,7 +107,6 @@ const CheckoutPage = () => {
                 </div>
                 <span className="font-bold text-slate-600 text-sm">Rs. 150</span>
               </label>
-
               <label className={`flex items-center justify-between p-4 border-2 rounded-xl cursor-pointer transition-all ${deliveryMethod === 'pickup' ? 'border-[#8cc63f] bg-[#8cc63f]/5' : 'border-slate-100'}`}>
                 <div className="flex items-center gap-3">
                   <input type="radio" checked={deliveryMethod === 'pickup'} onChange={() => setDeliveryMethod('pickup')} className="w-4 h-4 accent-[#8cc63f]" />
@@ -67,92 +117,59 @@ const CheckoutPage = () => {
               </label>
             </div>
 
-            {/* 2. Customer Information Form */}
+            {/* 2. Customer Information */}
             <h3 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wider">2. Shipping Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                  type="text" name="fullName" placeholder="Full Name"
-                  onChange={handleInput}
-                  className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none transition-all"
-                />
+                <input type="text" name="fullName" placeholder="Full Name" onChange={handleInput} className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none" />
               </div>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                  type="email" name="email" placeholder="Email Address"
-                  onChange={handleInput}
-                  className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none"
-                />
+                <input type="email" name="email" placeholder="Email Address" onChange={handleInput} className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none" />
               </div>
               <div className="relative md:col-span-2">
                 <MapPin className="absolute left-3 top-3 text-slate-400" size={18} />
-                <textarea
-                  name="address" placeholder="Full Delivery Address (Street, House No.)"
-                  onChange={handleInput}
-                  className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none h-20 resize-none"
-                />
+                <textarea name="address" placeholder="Full Delivery Address" onChange={handleInput} className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none h-20 resize-none" />
               </div>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                  type="tel" name="phone" placeholder="Phone Number"
-                  onChange={handleInput}
-                  className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none"
-                />
+                <input type="tel" name="phone" placeholder="Phone Number" onChange={handleInput} className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none" />
               </div>
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                  type="text" name="city" placeholder="City"
-                  onChange={handleInput}
-                  className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none"
-                />
+                <input type="text" name="city" placeholder="City" onChange={handleInput} className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#8cc63f] outline-none" />
               </div>
             </div>
 
-            {/* 3. Payment Method */}
+            {/* 3. Payment Method Selection */}
             <h3 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wider">3. Payment Method</h3>
             <div className="grid grid-cols-3 gap-3">
-              <button
-                onClick={() => setPaymentMethod('esewa')}
-                className={`flex flex-col items-center justify-center p-2 h-20 border-2 rounded-xl transition-all ${paymentMethod === 'esewa' ? 'border-[#60bb46] bg-[#60bb46]/5' : 'border-slate-100'}`}
-              >
+              <button onClick={() => setPaymentMethod('esewa')} className={`flex flex-col items-center justify-center p-2 h-20 border-2 rounded-xl transition-all ${paymentMethod === 'esewa' ? 'border-[#60bb46] bg-[#60bb46]/5' : 'border-slate-100'}`}>
                 <img src="./esewa_logo.png" alt="eSewa" className="h-8 object-contain" />
               </button>
-
-              <button
-                onClick={() => setPaymentMethod('khalti')}
-                className={`flex flex-col items-center justify-center p-2 border-2 h-20 rounded-xl transition-all ${paymentMethod === 'khalti' ? 'border-[#5c2d91] bg-[#5c2d91]/5' : 'border-slate-100'}`}
-              >
+              <button onClick={() => setPaymentMethod('khalti')} className={`flex flex-col items-center justify-center p-2 border-2 h-20 rounded-xl transition-all ${paymentMethod === 'khalti' ? 'border-[#5c2d91] bg-[#5c2d91]/5' : 'border-slate-100'}`}>
                 <img src="./khalti_logo.png" alt="Khalti" className="h-8 object-contain" />
               </button>
-
-              <button
-                onClick={() => setPaymentMethod('cod')}
-                className={`flex flex-col items-center justify-center p-2 border-2 rounded-xl transition-all ${paymentMethod === 'cod' ? 'border-slate-800 bg-slate-50' : 'border-slate-100'}`}
-              >
+              <button onClick={() => setPaymentMethod('cod')} className={`flex flex-col items-center justify-center p-2 border-2 rounded-xl transition-all ${paymentMethod === 'cod' ? 'border-slate-800 bg-slate-50' : 'border-slate-100'}`}>
                 <Coins className="h-6 mb-1 text-slate-700" />
                 <span className="text-[10px] font-bold text-slate-700 uppercase">Cash On Delivery</span>
               </button>
             </div>
 
-            {/* Final Actions */}
+            {/* Final Action Button */}
             <div className="flex flex-col md:flex-row gap-4 mt-10">
-              <button className="flex-1 py-4 border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-all">
-                Cancel
-              </button>
-              <button 
-              onClick={alertHandling}
-              className="flex-[2] cursor-pointer py-4 bg-[#8cc63f] text-white rounded-xl font-bold hover:bg-[#7ab335] shadow-lg shadow-[#8cc63f]/20 transition-all active:scale-[0.98]">
+              <button className="flex-1 py-4 border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-all">Cancel</button>
+              <button
+                onClick={handleConfirmOrder}
+                className="flex-[2] cursor-pointer py-4 bg-[#8cc63f] text-white rounded-xl font-bold hover:bg-[#7ab335] shadow-lg shadow-[#8cc63f]/20 transition-all active:scale-[0.98]"
+              >
                 Confirm Order: Rs. {totalAmount.toLocaleString()}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Order Summary (Kept your existing logic) */}
         {/* Right Column: Order Summary */}
         <div className="bg-white rounded-2xl shadow-sm p-6 h-fit sticky top-8 border border-slate-100">
           <h3 className="text-lg font-bold text-slate-800 mb-6">Order Summary</h3>
@@ -172,7 +189,9 @@ const CheckoutPage = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-slate-800">Rs. {(item.price * (item.quantity || 1)).toLocaleString()}</span>
+                    <span className="font-bold text-slate-800">
+                      Rs. {(item.price * (item.quantity || 1)).toLocaleString()}
+                    </span>
                     <Trash2
                       size={16}
                       className="text-slate-300 cursor-pointer hover:text-red-500 transition-colors"
@@ -200,7 +219,9 @@ const CheckoutPage = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500">VAT (13%)</span>
-              <span className="font-bold text-slate-700">Rs. {tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="font-bold text-slate-700">
+                Rs. {tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
             </div>
 
             <div className="flex justify-between border-t border-slate-100 pt-4 text-base">
